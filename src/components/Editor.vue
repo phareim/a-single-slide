@@ -1,5 +1,5 @@
 <template>
-<div contenteditable class="editor" />
+<div contenteditable class="editor" autofocus> </div>
 </template>
 
 <script setup>
