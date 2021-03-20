@@ -17,10 +17,13 @@ const state = reactive({charCount:0, lineCount: 0})
 .editor {
       font-family: 'Raleway', sans-serif;
       color: #eeeeee;
-      font-size: min(5rem, 7vw);     
+      font-size: min(4rem, 6vw);     
       padding: 10vh 5vw;
-      width: 90vw;
-      height: 80vh;
+      width: 88vw;
+      height: 78vh;
       text-align: center;
+      display: flex;
+      justify-content:center;
+      flex-direction: column;
     }
 </style>
