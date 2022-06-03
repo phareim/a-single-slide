@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
-    "tailwind-local": "npx tailwindcss -i ./input.css -o ./style.css --watch"
+    "tailwind-local": "npx tailwindcss -i ./input.css -o ./src/style.css --watch"
   },
   "dependencies": {
     "vue": "^3.0.5"

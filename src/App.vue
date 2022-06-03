@@ -10,6 +10,7 @@ import Menu from "./components/Menu.vue";
 </script>
 
 <style>
+@import url("./style.css");
 .menu {
   position: fixed;
   top: 0.5vw;
