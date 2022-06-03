@@ -1,19 +1,33 @@
 <template>
-  <div class="editor" @click="focus">
-    <div class="text" id="text" contenteditable autofocus></div>
-  </div>
+  <article class="editor h-screen text-7xl" @click="focus">
+    <div
+      class="text"
+      id="text"
+      contenteditable
+      autofocus
+      @input="onUpdate"
+    ></div>
+  </article>
 </template>
 
 <script setup>
-import { defineProps, reactive } from "vue";
+import { reactive } from "vue";
 
-defineProps({
-  msg: String,
-});
+let content = "";
+
+function onUpdate(e) {
+  state.access++;
+  let contentArray = e.target.innerText.split("\n");
+  if (contentArray.length > 0) {
+    contentArray[0] = `<span class="text-lg">${contentArray[0]}</span>`;
+  }
+  content = contentArray;
+}
+
 const focus = () => {
   document.getElementById("text").focus();
 };
-const state = reactive({ charCount: 0, lineCount: 0 });
+const state = reactive({ access: 0 });
 </script>
 
 <style scoped>
@@ -21,10 +35,7 @@ const state = reactive({ charCount: 0, lineCount: 0 });
 .editor {
   font-family: "Raleway", sans-serif;
   color: #eeeeee;
-  font-size: min(4rem, 6vw);
-  padding: 10vh 5vw;
-  width: 88vw;
-  height: 78vh;
+  width: 100vw;
   display: flex;
   justify-content: center;
   flex-direction: column;
