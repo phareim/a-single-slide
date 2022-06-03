@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "tailwind-local": "npx tailwindcss -i ./input.css -o ./style.css --watch"
   },
   "dependencies": {
     "vue": "^3.0.5"
@@ -13,6 +14,7 @@
   "devDependencies": {
     "@vitejs/plugin-vue": "^1.1.5",
     "@vue/compiler-sfc": "^3.0.5",
+    "tailwindcss": "^3.0.24",
     "vite": "^2.1.0"
   }
 }
