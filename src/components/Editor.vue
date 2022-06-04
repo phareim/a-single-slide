@@ -1,7 +1,7 @@
 <template>
   <article class="editor h-screen text-7xl" @click="focus">
     <div
-      class="text caret-slate-400"
+      class="text caret-slate-400 inline-block"
       id="text"
       contenteditable
       autofocus
@@ -18,14 +18,14 @@ let content = "";
 
 async function onUpdate(e) {
   state.access++;
-  const offset = document.getSelection().anchorOffset;
-  content = e.target.innerText;
-  e.target.innerText = content;
+
+  content = e.target.innerHtml;
+  e.target.innerHtml = content;
 
   //await nextTick();
-  const sel = document.getSelection();
+  const selection = document.getSelection();
 
-  document.getSelection().collapse(e.target.childNodes[0], offset);
+  selection.collapse(selection.focusNode, selection.anchorOffset);
 }
 
 const focus = () => {
