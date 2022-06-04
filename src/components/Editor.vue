@@ -21,7 +21,10 @@ function onUpdate(e) {
   if (contentArray.length > 0) {
     contentArray[0] = `<span class="text-lg">${contentArray[0]}</span>`;
   }
-  content = contentArray;
+  console.log(
+    `antall bokstaver ${e.target.innerText.length}, antall linjer ${contentArray.length}.`
+  );
+  content = e.target.innerText;
 }
 
 const focus = () => {
