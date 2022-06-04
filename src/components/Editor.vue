@@ -1,30 +1,31 @@
 <template>
   <article class="editor h-screen text-7xl" @click="focus">
     <div
-      class="text caret-transparent"
+      class="text caret-slate-400"
       id="text"
       contenteditable
       autofocus
       @input="onUpdate"
+      v-html="content"
     ></div>
   </article>
 </template>
 
 <script setup>
-import { reactive } from "vue";
+import { reactive, nextTick } from "vue";
 
 let content = "";
 
-function onUpdate(e) {
+async function onUpdate(e) {
   state.access++;
-  let contentArray = e.target.innerText.split("\n");
-  if (contentArray.length > 0) {
-    contentArray[0] = `<span class="text-lg">${contentArray[0]}</span>`;
-  }
-  console.log(
-    `antall bokstaver ${e.target.innerText.length}, antall linjer ${contentArray.length}.`
-  );
+  const offset = document.getSelection().anchorOffset;
   content = e.target.innerText;
+  e.target.innerText = content;
+
+  //await nextTick();
+  const sel = document.getSelection();
+
+  document.getSelection().collapse(e.target.childNodes[0], offset);
 }
 
 const focus = () => {
