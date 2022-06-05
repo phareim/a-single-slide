@@ -555,3 +555,7 @@ Ensure the default browser behavior of the `hidden` attribute.
 .caret-slate-400 {
   caret-color: #94a3b8;
 }
+
+.caret-slate-100 {
+  caret-color: #f1f5f9;
+}

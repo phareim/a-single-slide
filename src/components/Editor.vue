@@ -1,7 +1,7 @@
 <template>
   <article class="editor h-screen text-7xl" @click="focus">
     <div
-      class="text caret-slate-400 inline-block"
+      :class="isWriting ? 'caret-slate-100' : 'caret-transparent'"
       id="text"
       contenteditable
       autofocus
@@ -13,18 +13,36 @@
 
 <script setup>
 import { reactive, nextTick } from "vue";
+let isWriting = true; // well, this does not actually work as intended...
+let content = undefined;
 
-let content = "";
+function writing() {
+  isWriting = true;
+
+  // get id returned from setTimeout, store in array, clearTimeout(timeoutID) for all but newest.
+  setTimeout(() => {
+    isWriting = false;
+  }, "3000");
+}
+
+async function updateContent() {
+  if (content.length > 3) {
+    console.log("first line", content[0]);
+  }
+  console.log(content.length);
+}
 
 async function onUpdate(e) {
+  writing();
   state.access++;
 
-  content = e.target.innerHtml;
-  e.target.innerHtml = content;
+  if (!content) {
+    content = e.target.childNodes;
+  }
+  updateContent();
 
-  //await nextTick();
+  await nextTick();
   const selection = document.getSelection();
-
   selection.collapse(selection.focusNode, selection.anchorOffset);
 }
 
