@@ -1,7 +1,7 @@
 <template>
   <article class="editor h-screen text-7xl" @click="focus">
     <div
-      :class="isWriting ? 'caret-slate-100' : 'caret-transparent'"
+      class="caret-transparent"
       id="text"
       contenteditable
       autofocus
@@ -26,19 +26,17 @@ function writing() {
 }
 
 async function updateContent() {
-  if (content.length > 3) {
-    console.log("first line", content[0]);
-  }
-  console.log(content.length);
+  console.log("content", content);
+  localStorage.setItem("content", JSON.stringify(content));
+  console.log("content", eval(localStorage.getItem("content")));
 }
 
 async function onUpdate(e) {
   writing();
   state.access++;
 
-  if (!content) {
-    content = e.target.childNodes;
-  }
+  content = e.target.childNodes;
+
   updateContent();
 
   await nextTick();
@@ -47,6 +45,7 @@ async function onUpdate(e) {
 }
 
 const focus = () => {
+  content = localStorage.getItem(JSON.parse("content"));
   document.getElementById("text").focus();
 };
 const state = reactive({ access: 0 });
