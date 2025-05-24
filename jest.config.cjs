@@ -15,5 +15,7 @@ module.exports = {
     '<rootDir>/tests/**/*.spec.(js|jsx|ts|tsx)',
     '<rootDir>/tests/**/*.test.(js|jsx|ts|tsx)'
   ],
-  transformIgnorePatterns: ['/node_modules/']
+  transformIgnorePatterns: ['/node_modules/'],
+  // Suppress Node.js deprecation warnings
+  setupFiles: ['<rootDir>/jest.setup.js']
 } 

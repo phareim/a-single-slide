@@ -35,7 +35,6 @@ async function updateContent() {
 async function onUpdate(e) {
   writing();
   state.access++;
-
   content = e.target;
   await updateContent();
 
@@ -48,16 +47,12 @@ async function onUpdate(e) {
 
 const focus = () => {
   const storedContent = localStorage.getItem('content');
-  console.log('Stored content:', storedContent);
   if (storedContent) {
     try {
       const parsedContent = JSON.parse(storedContent);
-      console.log('Parsed content:', parsedContent);
       const textElement = document.querySelector('#text');
-      console.log('Text element:', textElement);
       if (textElement) {
         textElement.innerHTML = parsedContent;
-        console.log('Set innerHTML to:', parsedContent);
         textElement.focus();
       }
     } catch (e) {
