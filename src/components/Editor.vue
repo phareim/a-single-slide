@@ -26,27 +26,44 @@ function writing() {
 }
 
 async function updateContent() {
-  console.log("content", content);
-  localStorage.setItem("content", JSON.stringify(content));
-  console.log("content", eval(localStorage.getItem("content")));
+  if (content) {
+    const contentString = content.textContent || '';
+    localStorage.setItem('content', JSON.stringify(contentString));
+  }
 }
 
 async function onUpdate(e) {
   writing();
   state.access++;
 
-  content = e.target.childNodes;
-
-  updateContent();
+  content = e.target;
+  await updateContent();
 
   await nextTick();
   const selection = document.getSelection();
-  selection.collapse(selection.focusNode, selection.anchorOffset);
+  if (selection.focusNode) {
+    selection.collapse(selection.focusNode, selection.anchorOffset);
+  }
 }
 
 const focus = () => {
-  content = localStorage.getItem(JSON.parse("content"));
-  document.getElementById("text").focus();
+  const storedContent = localStorage.getItem('content');
+  console.log('Stored content:', storedContent);
+  if (storedContent) {
+    try {
+      const parsedContent = JSON.parse(storedContent);
+      console.log('Parsed content:', parsedContent);
+      const textElement = document.querySelector('#text');
+      console.log('Text element:', textElement);
+      if (textElement) {
+        textElement.innerHTML = parsedContent;
+        console.log('Set innerHTML to:', parsedContent);
+        textElement.focus();
+      }
+    } catch (e) {
+      console.error('Error parsing stored content:', e);
+    }
+  }
 };
 const state = reactive({ access: 0 });
 </script>

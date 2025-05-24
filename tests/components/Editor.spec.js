@@ -24,23 +24,44 @@ describe('Editor.vue', () => {
     const contentEditableDiv = wrapper.find('#text')
     const testContent = 'Hello, World!'
     
-    // Simulate input event
-    await contentEditableDiv.trigger('input', {
-      target: {
-        childNodes: testContent
-      }
-    })
+    // Set the content directly
+    contentEditableDiv.element.textContent = testContent
+    
+    // Trigger the input event
+    await contentEditableDiv.trigger('input')
 
     // Check if content was updated in localStorage
     const storedContent = JSON.parse(localStorage.getItem('content'))
     expect(storedContent).toBe(testContent)
   })
 
-  it('focuses the editor when clicked', async () => {
-    const contentEditableDiv = wrapper.find('#text')
-    await wrapper.trigger('click')
+  it('loads and focuses content on click', async () => {
+    const testContent = 'Test Content'
+    localStorage.setItem('content', JSON.stringify(testContent))
     
-    // Check if the element has focus
-    expect(document.activeElement).toBe(contentEditableDiv.element)
+    // Mount the component with attachTo: document.body to ensure proper DOM mounting
+    const wrapper = mount(Editor, {
+      attachTo: document.body
+    })
+    
+    const contentEditableDiv = wrapper.find('#text')
+    const focusSpy = jest.spyOn(contentEditableDiv.element, 'focus')
+    
+    // Verify initial state
+    expect(contentEditableDiv.element.textContent).toBe('')
+    
+    // Trigger click and wait for updates
+    await wrapper.trigger('click')
+    await wrapper.vm.$nextTick()
+    
+    // Verify final state
+    expect(contentEditableDiv.element.textContent).toBe(testContent)
+    expect(focusSpy).toHaveBeenCalled()
+    
+    // Verify localStorage is still intact
+    expect(JSON.parse(localStorage.getItem('content'))).toBe(testContent)
+    
+    // Clean up
+    wrapper.unmount()
   })
 }) 
