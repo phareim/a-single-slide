@@ -1,24 +1,27 @@
 <template>
   <article class="editor h-screen text-7xl" @click="focus" :style="{ fontFamily: `'${currentFont}', sans-serif` }">
     <div
-      class="caret-transparent"
+      :class="isEditorFocused ? 'caret-slate-100' : 'caret-transparent'"
       id="text"
       contenteditable
       autofocus
       @input="onUpdate"
+      @focus="onFocus"
+      @blur="onBlur"
       v-html="content"
     ></div>
   </article>
 </template>
 
 <script setup>
-import { reactive, nextTick } from "vue";
+import { reactive, nextTick, ref } from "vue";
 import { useGoogleFonts } from "../composables/useGoogleFonts.js";
 
 const { currentFont, fontWeight, setFontFromUrl } = useGoogleFonts();
 
 let isWriting = true; // well, this does not actually work as intended...
 let content = undefined;
+const isEditorFocused = ref(false);
 
 function writing() {
   isWriting = true;
@@ -64,6 +67,15 @@ const focus = () => {
     }
   }
 };
+
+const onFocus = () => {
+  isEditorFocused.value = true;
+};
+
+const onBlur = () => {
+  isEditorFocused.value = false;
+};
+
 const state = reactive({ access: 0 });
 </script>
 
