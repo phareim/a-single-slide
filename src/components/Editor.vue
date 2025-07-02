@@ -1,5 +1,5 @@
 <template>
-  <article class="editor h-screen text-7xl" @click="focus">
+  <article class="editor h-screen text-7xl" @click="focus" :style="{ fontFamily: `'${currentFont}', sans-serif` }">
     <div
       class="caret-transparent"
       id="text"
@@ -13,6 +13,10 @@
 
 <script setup>
 import { reactive, nextTick } from "vue";
+import { useGoogleFonts } from "../composables/useGoogleFonts.js";
+
+const { currentFont, fontWeight, setFontFromUrl } = useGoogleFonts();
+
 let isWriting = true; // well, this does not actually work as intended...
 let content = undefined;
 
@@ -64,9 +68,7 @@ const state = reactive({ access: 0 });
 </script>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@444&display=swap");
 .editor {
-  font-family: "Raleway", sans-serif;
   color: #eeeeee;
   width: 100vw;
   display: flex;
