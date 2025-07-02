@@ -1,14 +1,12 @@
 <template>
   <div class="frame">
     <editor />
-    <font-selector />
   </div>
 </template>
 
 <script setup>
 import Editor from "./components/Editor.vue";
 import Menu from "./components/Menu.vue";
-import FontSelector from "./components/FontSelector.vue";
 </script>
 
 <style>
