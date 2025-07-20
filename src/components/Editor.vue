@@ -1,7 +1,7 @@
 <template>
   <article class="editor h-screen text-7xl" @click="focus">
     <div
-      class="caret-transparent"
+      class="outline-none"
       id="text"
       contenteditable
       autofocus
