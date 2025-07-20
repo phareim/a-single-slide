@@ -103,7 +103,7 @@ const currentUrl = computed(() => {
 
 .selector-header {
   display: flex;
-  justify-content: between;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
 }

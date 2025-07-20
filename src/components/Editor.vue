@@ -1,66 +1,81 @@
 <template>
   <article class="editor h-screen text-7xl" @click="focus">
     <div
-      class="outline-none"
       id="text"
       contenteditable
       autofocus
       @input="onUpdate"
-      v-html="content"
+      @keydown="onKey"
+      class="outline-none"
+      :class="{ 'caret-hidden': !caretVisible }"
     ></div>
   </article>
 </template>
 
 <script setup>
-import { reactive, nextTick } from "vue";
-let isWriting = true; // well, this does not actually work as intended...
-let content = undefined;
+import { ref, nextTick } from "vue";
+
+// Stored HTML content string
+const content = ref("");
+
+// caret visibility management
+const caretVisible = ref(true);
+let caretTimeout = null;
+
+function resetCaretTimer() {
+  caretVisible.value = true;
+  if (caretTimeout) clearTimeout(caretTimeout);
+  caretTimeout = setTimeout(() => {
+    caretVisible.value = false;
+  }, 5000);
+}
+
+// Typing indicator helper
+let isWriting = true;
+let typingTimeout = null;
 
 function writing() {
   isWriting = true;
-
-  // get id returned from setTimeout, store in array, clearTimeout(timeoutID) for all but newest.
-  setTimeout(() => {
+  if (typingTimeout) clearTimeout(typingTimeout);
+  typingTimeout = setTimeout(() => {
     isWriting = false;
-  }, "3000");
+  }, 3000); // numeric delay, not string
 }
 
-async function updateContent() {
-  if (content) {
-    const contentString = content.textContent || '';
-    localStorage.setItem('content', JSON.stringify(contentString));
-  }
+function updateContent(newContent) {
+  content.value = newContent;
+  localStorage.setItem("content", JSON.stringify(newContent));
 }
 
-async function onUpdate(e) {
-  writing();
-  state.access++;
-  content = e.target;
-  await updateContent();
+function onUpdate(e) {
+  resetCaretTimer();
+  const newContent = e.target.innerHTML;
+  updateContent(newContent); // do NOT mutate DOM through Vue, keeps caret
+}
 
+function onKey() {
+  resetCaretTimer();
+}
+
+const focus = async () => {
+  const storedContent = localStorage.getItem("content");
   await nextTick();
-  const selection = document.getSelection();
-  if (selection.focusNode) {
-    selection.collapse(selection.focusNode, selection.anchorOffset);
-  }
-}
+  const textElement = document.querySelector("#text");
+  if (!textElement) return;
 
-const focus = () => {
-  const storedContent = localStorage.getItem('content');
+  // Load saved content only once per focus action
   if (storedContent) {
     try {
-      const parsedContent = JSON.parse(storedContent);
-      const textElement = document.querySelector('#text');
-      if (textElement) {
-        textElement.innerHTML = parsedContent;
-        textElement.focus();
-      }
+      content.value = JSON.parse(storedContent);
+      textElement.innerHTML = content.value;
     } catch (e) {
-      console.error('Error parsing stored content:', e);
+      console.error("Error parsing stored content:", e);
     }
   }
+
+  textElement.focus(); // let the browser keep the current caret position
+  resetCaretTimer();
 };
-const state = reactive({ access: 0 });
 </script>
 
 <style scoped>
@@ -73,5 +88,9 @@ const state = reactive({ access: 0 });
   justify-content: center;
   flex-direction: column;
   text-align: center;
+}
+
+.caret-hidden {
+  caret-color: transparent;
 }
 </style>
