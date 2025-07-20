@@ -1,5 +1,5 @@
 <template>
-  <div class="frame" :style="{ backgroundColor: bgColor }">
+  <div class="frame" :style="{ backgroundColor: bgColor, color: color }">
     <editor />
   </div>
 </template>
@@ -10,12 +10,18 @@ import Editor from "./components/Editor.vue";
 import Menu from "./components/Menu.vue";
 
 const bgColor = ref("rgb(41, 37, 36)");
+const color = ref("rgb(255, 255, 255)");
 
 onMounted(() => {
   const params = new URLSearchParams(window.location.search);
-  const bgParam = params.get("bg");
+
+  const bgParam = params.get("bg") || params.get("background");
   if (bgParam && /^#?[0-9A-Fa-f]{6}$/.test(bgParam)) {
     bgColor.value = bgParam.startsWith("#") ? bgParam : `#${bgParam}`;
+  }
+  const colorParam = params.get("c") || params.get("color");
+  if (colorParam && /^#?[0-9A-Fa-f]{6}$/.test(colorParam)) {
+    color.value = colorParam.startsWith("#") ? colorParam : `#${colorParam}`;
   }
 });
 </script>

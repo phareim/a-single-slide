@@ -82,7 +82,7 @@ const focus = async () => {
 @import url("https://fonts.googleapis.com/css2?family=Raleway:wght@444&display=swap");
 .editor {
   font-family: "Raleway", sans-serif;
-  color: #eeeeee;
+  color: inherit;
   width: 100vw;
   display: flex;
   justify-content: center;
