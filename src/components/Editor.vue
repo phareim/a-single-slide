@@ -1,38 +1,20 @@
 <template>
-  <article class="editor h-screen text-7xl" @click="focus" :style="{ fontFamily: `'${currentFont}', sans-serif` }">
+  <article class="editor h-screen text-7xl" @click="focus">
     <div
-      class="caret-transparent relative"
+      class="caret-transparent"
       id="text"
       contenteditable
       autofocus
       @input="onUpdate"
-      @focus="handleFocus"
-      @blur="handleBlur"
       v-html="content"
-    ></div>
-    <!-- Custom blinking cursor -->
-    <div 
-      v-show="isFocused && showCursor"
-      class="custom-cursor"
-      :style="cursorStyle"
     ></div>
   </article>
 </template>
 
 <script setup>
-import { reactive, nextTick, ref, onMounted, onUnmounted } from "vue";
-import { useGoogleFonts } from "../composables/useGoogleFonts.js";
-
-const { currentFont, fontWeight, setFontFromUrl } = useGoogleFonts();
-
+import { reactive, nextTick } from "vue";
 let isWriting = true; // well, this does not actually work as intended...
 let content = undefined;
-
-// Focus and cursor state
-const isFocused = ref(false);
-const showCursor = ref(true);
-const cursorStyle = ref({});
-let cursorInterval = null;
 
 function writing() {
   isWriting = true;
@@ -61,55 +43,7 @@ async function onUpdate(e) {
   if (selection.focusNode) {
     selection.collapse(selection.focusNode, selection.anchorOffset);
   }
-  
-  // Update cursor position
-  updateCursorPosition();
 }
-
-const handleFocus = () => {
-  isFocused.value = true;
-  startCursorBlink();
-  updateCursorPosition();
-};
-
-const handleBlur = () => {
-  isFocused.value = false;
-  stopCursorBlink();
-};
-
-const startCursorBlink = () => {
-  showCursor.value = true;
-  cursorInterval = setInterval(() => {
-    showCursor.value = !showCursor.value;
-  }, 530); // Standard cursor blink rate
-};
-
-const stopCursorBlink = () => {
-  if (cursorInterval) {
-    clearInterval(cursorInterval);
-    cursorInterval = null;
-  }
-  showCursor.value = false;
-};
-
-const updateCursorPosition = () => {
-  if (!isFocused.value) return;
-  
-  nextTick(() => {
-    const selection = window.getSelection();
-    if (selection.rangeCount > 0) {
-      const range = selection.getRangeAt(0);
-      const rect = range.getBoundingClientRect();
-      const editorRect = document.querySelector('.editor').getBoundingClientRect();
-      
-      cursorStyle.value = {
-        left: `${rect.left - editorRect.left}px`,
-        top: `${rect.top - editorRect.top}px`,
-        height: `${rect.height || 72}px`, // Fallback height for empty content
-      };
-    }
-  });
-};
 
 const focus = () => {
   const storedContent = localStorage.getItem('content');
@@ -126,36 +60,18 @@ const focus = () => {
     }
   }
 };
-
-onMounted(() => {
-  // Listen for selection changes to update cursor position
-  document.addEventListener('selectionchange', updateCursorPosition);
-});
-
-onUnmounted(() => {
-  stopCursorBlink();
-  document.removeEventListener('selectionchange', updateCursorPosition);
-});
-
 const state = reactive({ access: 0 });
 </script>
 
 <style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@444&display=swap");
 .editor {
+  font-family: "Raleway", sans-serif;
   color: #eeeeee;
   width: 100vw;
   display: flex;
   justify-content: center;
   flex-direction: column;
   text-align: center;
-  position: relative;
-}
-
-.custom-cursor {
-  position: absolute;
-  width: 2px;
-  background-color: #eeeeee;
-  pointer-events: none;
-  z-index: 1000;
 }
 </style>
