@@ -30,18 +30,6 @@ function resetCaretTimer() {
   }, 5000);
 }
 
-// Typing indicator helper
-let isWriting = true;
-let typingTimeout = null;
-
-function writing() {
-  isWriting = true;
-  if (typingTimeout) clearTimeout(typingTimeout);
-  typingTimeout = setTimeout(() => {
-    isWriting = false;
-  }, 3000); // numeric delay, not string
-}
-
 function updateContent(newContent) {
   content.value = newContent;
   localStorage.setItem("content", JSON.stringify(newContent));
@@ -63,17 +51,29 @@ const focus = async () => {
   const textElement = document.querySelector("#text");
   if (!textElement) return;
 
-  // Load saved content only once per focus action
+  // Load saved content only if it's different from current content
   if (storedContent) {
     try {
-      content.value = JSON.parse(storedContent);
-      textElement.innerHTML = content.value;
+      const parsedContent = JSON.parse(storedContent);
+      // Only update innerHTML if content has actually changed
+      if (textElement.innerHTML !== parsedContent) {
+        content.value = parsedContent;
+        textElement.innerHTML = content.value;
+        
+        // Set cursor to the end of the loaded text
+        const range = document.createRange();
+        const selection = window.getSelection();
+        range.selectNodeContents(textElement);
+        range.collapse(false); // false = collapse to end
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
     } catch (e) {
       console.error("Error parsing stored content:", e);
     }
   }
 
-  textElement.focus(); // let the browser keep the current caret position
+  textElement.focus(); // browser can now maintain caret position
   resetCaretTimer();
 };
 </script>
