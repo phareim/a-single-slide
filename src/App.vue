@@ -28,6 +28,13 @@ onMounted(() => {
 
 <style>
 @import url("./style.css");
+.frame {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+}
 .menu {
   position: fixed;
   top: 0.5vw;

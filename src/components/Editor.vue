@@ -84,6 +84,7 @@ const focus = async () => {
   font-family: "Raleway", sans-serif;
   color: inherit;
   width: 100vw;
+  height: 100vh;
   display: flex;
   justify-content: center;
   flex-direction: column;
