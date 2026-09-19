@@ -1,34 +1,33 @@
-# Agent Instructions
+# AGENTS.md
 
-Read `./CLAUDE.md` before making substantial changes in this repository.
+Guidance for coding agents (Claude Code, Codex, OpenCode) working in this repository.
 
-If a parent directory also contains `AGENTS.md` or `CLAUDE.md`, follow the more local file when instructions conflict.
+## Project
 
+A Single Slide — a minimal, distraction-free full-screen text editor for displaying text on a single slide. Built with Vue 3 (Composition API), Vite, and TailwindCSS. PWA-enabled. Live at https://a-single-slide.io/
 
-## Working Agreement
+## Commands
 
-- Follow existing project conventions before introducing new patterns.
-- Run the most relevant tests or checks for the files you change.
-- Update docs when changing architecture, APIs, configuration, operational workflows, or deployment behavior.
-- Do not overwrite unrelated local changes.
+- `npm run dev` — Start dev server (port 5173)
+- `npm run build` — Production build
+- `npm test` — Run tests (Jest)
+- `npm run test:watch` — Run tests in watch mode
+- `npx jest tests/components/Editor.spec.js` — Run a single test file
 
-## Repo Notes
+## Architecture
 
-Replace this section with repo-specific instructions such as:
+**App.vue** is the root component. It handles URL-based color customization (`?bg=`, `?color=`) and renders the Editor.
 
-- preferred dev and test commands
-- deployment steps
-- code style constraints
-- architectural guardrails
-- directories that need extra care
-- services or environment dependencies
+**Editor.vue** is the core component — a contenteditable div that persists to localStorage as JSON. Features auto-hiding caret (5s timeout) and loads saved content on click.
 
-## Suggested Minimal Overrides
+**FontSelector.vue** provides a toggle dropdown (top-right "Aa" button) for selecting from 20 Google Web Fonts and font weights. Generates shareable URLs with font parameters.
 
-Add only the rules that are specific enough to affect agent behavior, for example:
+**useGoogleFonts.js** composable manages dynamic Google Font loading via `<link>` tags, reads/writes URL params (`?font=`, `?weight=`), and updates browser history.
 
-- `npm test` is required for backend changes
-- `flutter analyze` and `flutter test` are required for app changes
-- update `database/schema.sql` together with migrations
-- avoid editing generated files under `dist/`
+## URL Parameters
 
+All customization is URL-driven: `?font=Inter&weight=700&bg=1a1a2e&color=e0e0e0`. Colors accept hex values with or without `#`.
+
+## Testing
+
+Tests live in `tests/components/` using Jest + Vue Test Utils. Config in `jest.config.cjs` with jsdom environment. Path alias `@/` maps to `src/`.
